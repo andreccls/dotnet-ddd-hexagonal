@@ -1,6 +1,9 @@
 using System.Net;
 using System.Text;
 using DddHexagonal.Api.Tests.Support;
+using DddHexagonal.Application.Ports.In;
+using DddHexagonal.Application.Products;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DddHexagonal.Api.Tests;
 
@@ -45,4 +48,27 @@ public sealed class PlatformEndpointsTests(ApiFactory factory)
     [Fact]
     public async Task InvalidGuidInRoute_Returns404() =>
         Assert.Equal(HttpStatusCode.NotFound, (await _client.GetAsync("/customers/not-a-guid")).StatusCode);
+}
+
+[Collection(ApiFixtureDefinition.Name)]
+public sealed class UnexpectedErrorTests(ApiFactory factory)
+{
+    private sealed class ExplodingUseCase : IUseCase<GetProductQuery, ProductResponse>
+    {
+        public Task<ProductResponse> ExecuteAsync(GetProductQuery request, CancellationToken cancellationToken = default) =>
+            throw new InvalidOperationException("secret internal detail");
+    }
+
+    [Fact]
+    public async Task UnexpectedException_Returns500ProblemDetails_WithoutLeakingInternals()
+    {
+        using var app = factory.WithWebHostBuilder(b =>
+            b.ConfigureServices(s => s.AddScoped<IUseCase<GetProductQuery, ProductResponse>, ExplodingUseCase>()));
+
+        var response = await app.CreateClient().GetAsync($"/products/{Guid.NewGuid()}");
+
+        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+        Assert.Equal("application/problem+json", response.Content.Headers.ContentType?.MediaType);
+        Assert.DoesNotContain("secret internal detail", await response.Content.ReadAsStringAsync(), StringComparison.Ordinal);
+    }
 }
