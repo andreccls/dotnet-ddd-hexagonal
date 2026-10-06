@@ -1,0 +1,42 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{json,yml,yaml,csproj,props,md}]
+indent_size = 2
+
+[Makefile]
+indent_style = tab
+
+[*.cs]
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_using_directive_placement = outside_namespace:warning
+dotnet_sort_system_directives_first = true
+csharp_style_var_for_built_in_types = true:suggestion
+dotnet_style_qualification_for_field = false:warning
+
+# --- Analyzer tuning (documented deviations) ---
+# Library-style code in an app: no need for ConfigureAwait(false) (ASP.NET Core has no sync context).
+dotnet_diagnostic.CA2007.severity = none
+# Logging source generators are overkill for this example (YAGNI).
+dotnet_diagnostic.CA1848.severity = none
+# Public API analyzers that fight with records/DTOs and test names.
+dotnet_diagnostic.CA1716.severity = none
+dotnet_diagnostic.CA1812.severity = none
+dotnet_diagnostic.CA1002.severity = none
+dotnet_diagnostic.CA1819.severity = none
+
+[tests/**/*.cs]
+# Test names use Method_Scenario_Expected underscores.
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1861.severity = none
+dotnet_diagnostic.CA1515.severity = none
+
+[**/Migrations/*.cs]
+generated_code = true
