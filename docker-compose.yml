@@ -1,0 +1,58 @@
+# Local development stack. All passwords below are DEVELOPMENT-ONLY defaults:
+# never reuse them anywhere else. Override through a `.env` file (see .env.example).
+name: dotnet-ddd-hexagonal
+
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-dev_only_root_password}
+      MYSQL_DATABASE: ddd_hexagonal
+    ports:
+      - "127.0.0.1:${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+
+  api:
+    build: .
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__Default: Server=mysql;Port=3306;Database=ddd_hexagonal;User=root;Password=${MYSQL_ROOT_PASSWORD:-dev_only_root_password}
+      Database__MigrateOnStartup: "true"
+    ports:
+      - "${API_PORT:-8080}:8080"
+    healthcheck:
+      # The aspnet runtime image has no curl/wget: plain TCP probe through bash.
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080'"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+
+  # .NET SDK toolbox used by the Makefile when `dotnet` is not installed locally.
+  sdk:
+    image: mcr.microsoft.com/dotnet/sdk:9.0
+    profiles: ["tools"]
+    working_dir: /src
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+      TEST_MYSQL_CONNECTION: Server=mysql;Port=3306;User=root;Password=${MYSQL_ROOT_PASSWORD:-dev_only_root_password}
+    volumes:
+      - ./:/src
+      - nuget-cache:/root/.nuget/packages
+
+volumes:
+  mysql-data:
+  nuget-cache:

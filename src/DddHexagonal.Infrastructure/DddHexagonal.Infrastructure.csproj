@@ -8,4 +8,7 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="DddHexagonal.Infrastructure.Tests" />
+  </ItemGroup>
 </Project>
