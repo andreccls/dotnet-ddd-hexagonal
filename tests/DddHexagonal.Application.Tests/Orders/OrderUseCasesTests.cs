@@ -117,7 +117,10 @@ public sealed class OrderUseCasesTests
     {
         var order = await SeedOrder(await SeedCustomer(), (await SeedProduct(), 1));
         var useCase = new GetOrderUseCase(_orders);
-        Assert.Equal(order.Id, (await useCase.ExecuteAsync(new GetOrderQuery(order.Id))).Id);
+        var fetched = await useCase.ExecuteAsync(new GetOrderQuery(order.Id));
+        Assert.Equal(order.Id, fetched.Id);
+        Assert.Equal(order.CustomerId, fetched.CustomerId);
+        Assert.NotEqual(order, fetched with { Total = -1m }); // records compare by value
         await Assert.ThrowsAsync<NotFoundException>(() => useCase.ExecuteAsync(new GetOrderQuery(Guid.NewGuid())));
     }
 

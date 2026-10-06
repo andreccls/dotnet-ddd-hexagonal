@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using DddHexagonal.Domain.Common;
 using DddHexagonal.Domain.Products;
 
@@ -15,6 +16,7 @@ public sealed class Order : AggregateRoot
         Status = OrderStatus.Pending;
     }
 
+    [ExcludeFromCodeCoverage(Justification = "Parameterless constructor used only by EF Core to materialize the entity.")]
     private Order()
     {
         // EF Core

@@ -33,4 +33,11 @@ public sealed class CpfTests
     public void Create_AcceptsCpfWhoseCheckDigitsAreZero() =>
         // Both check digits hit the "remainder >= 10 => 0" branch.
         Assert.Equal("10000003700", Cpf.Create("100.000.037-00").Value);
+
+    [Fact]
+    public void Equality_IsByValue()
+    {
+        Assert.Equal(Cpf.Create("529.982.247-25"), Cpf.Create("52998224725"));
+        Assert.Equal("52998224725", Cpf.Create("529.982.247-25").ToString());
+    }
 }

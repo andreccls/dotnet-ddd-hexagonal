@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using DddHexagonal.Domain.Common;
 using DddHexagonal.Domain.Products;
 
@@ -14,6 +15,7 @@ public sealed class OrderItem : Entity
         Quantity = line.Quantity;
     }
 
+    [ExcludeFromCodeCoverage(Justification = "Parameterless constructor used only by EF Core to materialize the entity.")]
     private OrderItem()
     {
         // EF Core

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace DddHexagonal.Domain.Common;
 
 /// <summary>Base class for objects with identity: two entities are equal when type and Id match.</summary>
@@ -13,7 +15,7 @@ public abstract class Entity : IEquatable<Entity>
         Id = id;
     }
 
-    /// <summary>Required by EF Core materialization only.</summary>
+    [ExcludeFromCodeCoverage(Justification = "Parameterless constructor used only by EF Core to materialize the entity.")]
     protected Entity()
     {
     }
@@ -35,6 +37,7 @@ public abstract class AggregateRoot : Entity
     {
     }
 
+    [ExcludeFromCodeCoverage(Justification = "Parameterless constructor used only by EF Core to materialize the entity.")]
     protected AggregateRoot()
     {
     }

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using DddHexagonal.Domain.Common;
 
 namespace DddHexagonal.Domain.Customers;
@@ -17,6 +18,7 @@ public sealed class Customer : AggregateRoot
         Active = true;
     }
 
+    [ExcludeFromCodeCoverage(Justification = "Parameterless constructor used only by EF Core to materialize the entity.")]
     private Customer()
     {
         // EF Core

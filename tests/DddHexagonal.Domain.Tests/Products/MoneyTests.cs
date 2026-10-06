@@ -30,4 +30,7 @@ public sealed class MoneyTests
 
     [Fact]
     public void Equality_IsByAmount() => Assert.Equal(Money.Create(1m), Money.Create(1.00m));
+
+    [Fact]
+    public void ToString_UsesInvariantCulture() => Assert.Equal("10.50", Money.Create(10.5m).ToString());
 }

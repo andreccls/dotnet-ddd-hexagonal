@@ -39,3 +39,17 @@ public sealed class EntityTests
     public void Entity_WithEmptyId_IsRejected() =>
         Assert.Throws<ArgumentException>(() => new Foo(Guid.Empty));
 }
+
+public sealed class DomainExceptionTests
+{
+    [Fact]
+    public void NotFound_BuildsMessage() =>
+        Assert.Contains("Foo", NotFoundException.For("Foo", Guid.NewGuid()).Message, StringComparison.Ordinal);
+
+    [Fact]
+    public void Specializations_AreDomainExceptions()
+    {
+        Assert.IsAssignableFrom<DomainException>(new NotFoundException("x"));
+        Assert.IsAssignableFrom<DomainException>(new ConflictException("x"));
+    }
+}

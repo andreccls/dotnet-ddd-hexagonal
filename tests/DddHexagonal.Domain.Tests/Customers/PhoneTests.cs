@@ -17,4 +17,11 @@ public sealed class PhoneTests
     [InlineData("1234567890123456")]
     [InlineData("phone")]
     public void Create_RejectsInvalid(string? raw) => Assert.Throws<DomainException>(() => Phone.Create(raw));
+
+    [Fact]
+    public void Equality_IsByValue()
+    {
+        Assert.Equal(Phone.Create("(31) 3333-4444"), Phone.Create("3133334444"));
+        Assert.Equal("3133334444", Phone.Create("3133334444").ToString());
+    }
 }
