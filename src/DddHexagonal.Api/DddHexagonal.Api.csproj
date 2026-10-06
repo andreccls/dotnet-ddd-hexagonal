@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="..\DddHexagonal.Application\DddHexagonal.Application.csproj" />
+    <!-- Referenced ONLY by the composition root (Program.cs). Endpoints never touch it. -->
+    <ProjectReference Include="..\DddHexagonal.Infrastructure\DddHexagonal.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
+  </ItemGroup>
+</Project>

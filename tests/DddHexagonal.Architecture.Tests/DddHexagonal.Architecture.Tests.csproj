@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DddHexagonal.Api\DddHexagonal.Api.csproj" />
+    <ProjectReference Include="..\..\src\DddHexagonal.Infrastructure\DddHexagonal.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NetArchTest.Rules" />
+  </ItemGroup>
+</Project>

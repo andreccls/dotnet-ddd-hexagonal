@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DddHexagonal.Infrastructure\DddHexagonal.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>
